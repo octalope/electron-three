@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Document</title>
+        <style>
+            body { margin: 0; overflow-y: hidden; }
+            canvas { position: relative; }
+        </style>
+    </head>
+    <body>
+        <script src="js/three.js"></script>
+        <script>
+            var scene = new THREE.Scene();
+            var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+            camera.position.z = 2;
+
+            var ambientLight = new THREE.AmbientLight( 0x404040 ); // soft white light
+            scene.add( ambientLight );
+
+            var light = new THREE.DirectionalLight( 0xffffff, 1 );
+            light.position.set( 1, 1, 1 ).normalize();
+            scene.add( light );
+
+            var cube = new THREE.Mesh( new THREE.BoxBufferGeometry( 0.75, 0.75, 0.75 ), new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
+            scene.add( cube );
+            cube.position.x = 0.25;
+
+            var cube2 = new THREE.Mesh( new THREE.BoxBufferGeometry( 0.75, 0.75, 0.75 ), new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
+            scene.add( cube2 );
+            cube2.position.x = -0.25;
+
+            var renderer = new THREE.WebGLRenderer();
+            renderer.setSize( window.innerWidth, window.innerHeight );
+            document.body.appendChild( renderer.domElement );
+
+            var t0 = Date.now();
+
+            window.addEventListener( 'resize', onWindowResize, false );
+
+            function onWindowResize(){
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize( window.innerWidth, window.innerHeight );
+            }
+
+            function render() {
+                cube.rotation.x += 0.005;
+                cube.rotation.y += 0.001;
+                cube.rotation.z += 0.025;
+
+                cube2.rotation.z += 0.005;
+                cube2.rotation.x += 0.001;
+                cube2.rotation.y += 0.025;
+
+                var dt = Date.now() - t0;
+
+                cube.scale.x= 1.0 + 0.6*Math.sin(dt/300);
+                cube.scale.y= 1.0 + 0.6*Math.sin(dt/300);
+                cube.scale.z= 1.0 + 0.6*Math.sin(dt/300);
+
+                cube2.scale.x= 1.0 - 0.3*Math.sin(dt/300);
+                cube2.scale.y= 1.0 - 0.3*Math.sin(dt/300);
+                cube2.scale.z= 1.0 - 0.3*Math.sin(dt/300);
+
+                requestAnimationFrame( render );
+                renderer.render( scene, camera );
+            }
+
+            render();
+        </script>
+    </body>
+</html>
+
